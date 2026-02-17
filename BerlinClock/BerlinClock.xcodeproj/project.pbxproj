@@ -33,6 +33,7 @@
 		FB7959652F44B0DF00C9915D /* Exceptions for "BerlinClock" folder in "BerlinClockTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Domain/Infrastructure/SystemTimeProvider.swift,
 				Domain/Models/BerlinClockState.swift,
 				Domain/Models/BerlinTime.swift,
 				Domain/Protocols/BerlinClockConverter.swift,

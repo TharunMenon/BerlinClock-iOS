@@ -13,7 +13,7 @@ final class BerlinTimeProviderTests: XCTestCase {
         
         override func setUp() {
             super.setUp()
-            timeProvider = SystemTimeProvider()
+            timeProvider = SystemTimeProvider() 
         }
         
         override func tearDown() {

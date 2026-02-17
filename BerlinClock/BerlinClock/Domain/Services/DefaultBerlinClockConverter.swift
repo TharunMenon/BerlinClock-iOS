@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class DefaultBerlinClockConverter: BerlinClockConverter {
+public final class DefaultBerlinClockConverter: BerlinClockConverter {
     
     // MARK: - Constants
     private static let fiveHourRowSize = 4
