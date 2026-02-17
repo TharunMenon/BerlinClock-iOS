@@ -9,5 +9,5 @@ import Foundation
 
 //To get current time
 public protocol BerlinTimeProvider {
-    func getcurrentTime() -> BerlinTime
+    func getCurrentTime() -> BerlinTime
 }
