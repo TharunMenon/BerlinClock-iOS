@@ -29,9 +29,25 @@
 		FB79594C2F44A7ED00C9915D /* BerlinClockUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BerlinClockUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		FB7959652F44B0DF00C9915D /* Exceptions for "BerlinClock" folder in "BerlinClockTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Domain/Models/BerlinClockState.swift,
+				Domain/Models/BerlinTime.swift,
+				Domain/Protocols/BerlinClockConverter.swift,
+				Domain/Protocols/BerlinTimeProvider.swift,
+			);
+			target = FB7959412F44A7ED00C9915D /* BerlinClockTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		FB7959372F44A7EB00C9915D /* BerlinClock */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FB7959652F44B0DF00C9915D /* Exceptions for "BerlinClock" folder in "BerlinClockTests" target */,
+			);
 			path = BerlinClock;
 			sourceTree = "<group>";
 		};
