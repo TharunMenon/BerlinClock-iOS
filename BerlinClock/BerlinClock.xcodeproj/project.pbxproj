@@ -37,6 +37,7 @@
 				Domain/Models/BerlinTime.swift,
 				Domain/Protocols/BerlinClockConverter.swift,
 				Domain/Protocols/BerlinTimeProvider.swift,
+				Domain/Services/DefaultBerlinClockConverter.swift,
 			);
 			target = FB7959412F44A7ED00C9915D /* BerlinClockTests */;
 		};
