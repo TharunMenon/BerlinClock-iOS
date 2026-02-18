@@ -7,6 +7,7 @@
 
 import XCTest
 import Combine
+@testable import BerlinClock
 
 final class BerlinClockViewModelTests: XCTestCase {
     private var viewModel: BerlinClockViewModel!
@@ -14,6 +15,7 @@ final class BerlinClockViewModelTests: XCTestCase {
     private var converter: BerlinClockConverter!
     private var cancellables: Set<AnyCancellable>!
     
+    @MainActor
     override func setUp() {
         super.setUp()
         mockTimeProvider = MockBerlinTimeProvider(fixedTime: BerlinTime(hours: 14, minutes: 30, seconds: 25))
@@ -30,6 +32,7 @@ final class BerlinClockViewModelTests: XCTestCase {
         super.tearDown()
     }
     
+    @MainActor
     func testInitialState() {
         // Then
         XCTAssertFalse(viewModel.secondsLamp)
@@ -39,6 +42,7 @@ final class BerlinClockViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.singleMinutesRow, [false, false, false, false])
     }
     
+    @MainActor
     func testUpdateTime() {
         // When
         viewModel.updateTime()
@@ -54,6 +58,7 @@ final class BerlinClockViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.singleMinutesRow, [false, false, false, false]) // 0 minutes
     }
     
+    @MainActor
     func testStartStopTimer() {
         // Given
         let expectation = XCTestExpectation(description: "Timer should update")

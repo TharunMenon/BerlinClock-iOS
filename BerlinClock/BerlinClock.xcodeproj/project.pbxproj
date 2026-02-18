@@ -36,6 +36,7 @@
 				Domain/Infrastructure/SystemTimeProvider.swift,
 				Domain/Models/BerlinClockState.swift,
 				Domain/Models/BerlinTime.swift,
+				Domain/Presentation/BerlinClockViewModel.swift,
 				Domain/Protocols/BerlinClockConverter.swift,
 				Domain/Protocols/BerlinTimeProvider.swift,
 				Domain/Services/DefaultBerlinClockConverter.swift,
