@@ -24,6 +24,7 @@ struct BerlinClockView: View {
             Text("Berlin Clock")
                 .font(.largeTitle)
                 .fontWeight(.bold)
+                .foregroundColor(Color.white)
                 .padding(.top)
             
             // Seconds Lamp (top)
