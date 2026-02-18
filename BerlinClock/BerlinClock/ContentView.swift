@@ -8,17 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+    private let timeProvider = SystemTimeProvider()
+        private let converter = DefaultBerlinClockConverter()
+        
+        var body: some View {
+            let viewModel = BerlinClockViewModel(timeProvider: timeProvider, converter: converter)
+            
+            BerlinClockView(viewModel: viewModel)
+                .onAppear {
+                    viewModel.startTimer()
+                }
         }
-        .padding()
     }
-}
-
-#Preview {
-    ContentView()
-}
+     
+    #Preview {
+        ContentView()
+    }

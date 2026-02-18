@@ -40,6 +40,7 @@
 				Domain/Services/DefaultBerlinClockConverter.swift,
 				Infrastructure/SystemTimeProvider.swift,
 				Presentation/BerlinClockViewModel.swift,
+				UI/BerlinClockView.swift,
 			);
 			target = FB7959412F44A7ED00C9915D /* BerlinClockTests */;
 		};
