@@ -11,14 +11,25 @@ import Combine
 @MainActor
 public final class BerlinClockViewModel: ObservableObject {
     
+    
+    // MARK: - Constants
+        private static let timerInterval: TimeInterval = 1.0
+        private static let defaultRowSizes = (
+            fiveHours: 4,
+            singleHours: 4,
+            fiveMinutes: 11,
+            singleMinutes: 4
+        )
+    
+    
     // MARK: - Published Properties
     @Published public private(set) var secondsLamp: Bool = false
-    @Published public private(set) var fiveHoursRow: [Bool] = Array(repeating: false, count: 4)
-    @Published public private(set) var singleHoursRow: [Bool] = Array(repeating: false, count: 4)
-    @Published public private(set) var fiveMinutesRow: [Bool] = Array(repeating: false, count: 11)
-    @Published public private(set) var singleMinutesRow: [Bool] = Array(repeating: false, count: 4)
+    @Published public private(set) var fiveHoursRow: [Bool] = Array(repeating: false, count: defaultRowSizes.fiveHours)
+    @Published public private(set) var singleHoursRow: [Bool] = Array(repeating: false, count: defaultRowSizes.singleHours)
+    @Published public private(set) var fiveMinutesRow: [Bool] = Array(repeating: false, count: defaultRowSizes.fiveMinutes)
+    @Published public private(set) var singleMinutesRow: [Bool] = Array(repeating: false, count: defaultRowSizes.singleMinutes)
     
-    // MARK: - Dependencies
+    // MARK: Dependencies
     private let timeProvider: BerlinTimeProvider
     private let converter: BerlinClockConverter
     
@@ -26,7 +37,7 @@ public final class BerlinClockViewModel: ObservableObject {
     private var timer: Timer?
     
     public var isTimerRunning: Bool {
-        return timer != nil
+        timer?.isValid ?? false
     }
     
     // MARK: - Initialization
@@ -45,22 +56,17 @@ public final class BerlinClockViewModel: ObservableObject {
     // Updates the clock with current time
     public func updateTime() {
         let currentTime = timeProvider.getCurrentTime()
-        let clockState = converter.convert(_time: currentTime)
+        let newClockState = converter.convert(_time: currentTime)
         
-        secondsLamp = clockState.secondsLamp
-        fiveHoursRow = clockState.fiveHoursRow
-        singleHoursRow = clockState.singleHoursRow
-        fiveMinutesRow = clockState.fiveMinutesRow
-        singleMinutesRow = clockState.singleMinutesRow
+        updateClockState(newClockState)
     }
-    
+           
     // Starts the timer to update every second
     public func startTimer() {
         stopTimer()
         updateTime()
         
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            guard let self = self else { return }
+        timer = Timer.scheduledTimer(withTimeInterval:BerlinClockViewModel.timerInterval, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.updateTime()
             }
@@ -72,4 +78,22 @@ public final class BerlinClockViewModel: ObservableObject {
         timer?.invalidate()
         timer = nil
     }
+    
+    // Updates the clock state only if values have changed
+    private func updateClockState(_ clockState: BerlinClockState) {
+        if secondsLamp != clockState.secondsLamp {
+                secondsLamp = clockState.secondsLamp}
+            
+        if fiveHoursRow != clockState.fiveHoursRow {
+                fiveHoursRow = clockState.fiveHoursRow}
+        
+        if singleHoursRow != clockState.singleHoursRow {
+                singleHoursRow = clockState.singleHoursRow}
+            
+        if fiveMinutesRow != clockState.fiveMinutesRow {
+                fiveMinutesRow = clockState.fiveMinutesRow}
+            
+        if singleMinutesRow != clockState.singleMinutesRow {
+                singleMinutesRow = clockState.singleMinutesRow}
+        }
 }

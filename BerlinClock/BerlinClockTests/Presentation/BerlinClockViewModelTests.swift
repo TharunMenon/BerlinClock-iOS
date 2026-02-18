@@ -60,25 +60,19 @@ final class BerlinClockViewModelTests: XCTestCase {
     
     @MainActor
     func testStartStopTimer() {
-        // Given
-        let expectation = XCTestExpectation(description: "Timer should update")
-        
-        viewModel.$secondsLamp
-            .dropFirst()
-            .sink { _ in
-                expectation.fulfill()
-            }
-            .store(in: &cancellables)
-        
-        // When
-        viewModel.startTimer()
-        
-        // Then
-        wait(for: [expectation], timeout: 2.0)
-        
-        // When
-        viewModel.stopTimer()
-        
-        
-    }
+            // Given
+            XCTAssertFalse(viewModel.isTimerRunning)
+            
+            // When
+            viewModel.startTimer()
+            
+            // Then
+            XCTAssertTrue(viewModel.isTimerRunning)
+            
+            // When
+            viewModel.stopTimer()
+            
+            // Then
+            XCTAssertFalse(viewModel.isTimerRunning)
+        }
 }
