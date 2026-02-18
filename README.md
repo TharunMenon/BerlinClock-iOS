@@ -1,4 +1,5 @@
 
+
 Berlin Clock (Mengenlehreuhr) – iOS (TDD + Clean Architecture)
 
 A production-grade implementation of the Berlin Clock kata built using Test-Driven Development (TDD) and Clean Architecture in Swift / SwiftUI.
@@ -73,7 +74,7 @@ Refactor safely
 Commit each step
 
 Test Coverage
-
+-------------
 Domain logic
 
 Edge cases
@@ -109,8 +110,6 @@ iOS 17+
 
 Swift 5.9+
 
-Run App
-Cmd + R
+Run App :Cmd + R
 
-Run Tests
-Cmd + U
+Run Tests :Cmd + U
