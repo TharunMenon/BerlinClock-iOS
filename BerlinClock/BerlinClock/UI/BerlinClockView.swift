@@ -11,121 +11,237 @@ struct BerlinClockView: View {
     @ObservedObject private var viewModel: BerlinClockViewModel
     
     // MARK: - Constants
-    private let lampSize: CGFloat = 50
-    private let spacing: CGFloat = 8
+    private struct LayoutConstants {
+        static let baseLampSize: CGFloat = 50
+        static let spacing: CGFloat = 6
+        static let cornerRadius: CGFloat = 8
+        static let smallCornerRadius: CGFloat = 6
+        static let strokeWidth: CGFloat = 1
+        static let secondsLampStrokeWidth: CGFloat = 2
+        static let sectionSpacing: CGFloat = 20
+        static let titlePadding: CGFloat = 16
+    }
     
     init(viewModel: BerlinClockViewModel) {
         self.viewModel = viewModel
     }
     
     var body: some View {
-        VStack(spacing: 20) {
-            // Title
-            Text("Berlin Clock")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(Color.white)
-                .padding(.top)
-            
-            // Seconds Lamp (top)
-            secondsLampView
-            
-            // Five Hours Row
-            hourRowView(lights: viewModel.fiveHoursRow, color: .red, label: "Hours (×5)")
-            
-            // Single Hours Row
-            hourRowView(lights: viewModel.singleHoursRow, color: .red, label: "Hours (×1)")
-            
-            // Five Minutes Row
-            minuteRowView(lights: viewModel.fiveMinutesRow, color: .yellow, label: "Minutes (×5)")
-            
-            // Single Minutes Row
-            minuteRowView(lights: viewModel.singleMinutesRow, color: .yellow, label: "Minutes (×1)")
-            
-            Spacer()
-            
-            // Control Buttons
-            controlButtonsView
+        GeometryReader { geometry in
+            VStack(spacing: LayoutConstants.sectionSpacing) {
+                // Title
+                Text("Berlin Clock")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.top, LayoutConstants.titlePadding)
+                
+                // Clock sections
+                VStack(spacing: LayoutConstants.sectionSpacing) {
+                    // Seconds Lamp (top)
+                    secondsLampView(geometry: geometry)
+                    
+                    // Five Hours Row
+                    hourRowView(
+                        lights: viewModel.fiveHoursRow,
+                        color: .red,
+                        label: "Hours (×5)",
+                        geometry: geometry
+                    )
+                    
+                    // Single Hours Row
+                    hourRowView(
+                        lights: viewModel.singleHoursRow,
+                        color: .red,
+                        label: "Hours (×1)",
+                        geometry: geometry
+                    )
+                    
+                    // Five Minutes Row
+                    minuteRowView(
+                        lights: viewModel.fiveMinutesRow,
+                        color: .yellow,
+                        label: "Minutes (×5)",
+                        geometry: geometry
+                    )
+                    
+                    // Single Minutes Row
+                    minuteRowView(
+                        lights: viewModel.singleMinutesRow,
+                        color: .yellow,
+                        label: "Minutes (×1)",
+                        geometry: geometry
+                    )
+                }
+                
+                Spacer()
+            }
         }
         .padding()
-        .background(Color.black.ignoresSafeArea())
+        .background(liquidGlassyBackground)
+        .onAppear {
+            viewModel.startTimer()
+        }
+        .onDisappear {
+            viewModel.stopTimer()
+        }
+    }
+    
+    // MARK: - Background
+    
+    private var liquidGlassyBackground: some View {
+        ZStack {
+            // Base black background
+            Color.black
+            
+            // Liquid gradient overlay
+            LinearGradient(
+                colors: [
+                    Color.black,
+                    Color.gray.opacity(0.3),
+                    Color.black,
+                    Color.white.opacity(0.1),
+                    Color.black
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .opacity(0.7)
+            
+            // Animated liquid bubbles
+            ForEach(0..<3, id: \.self) { index in
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [
+                                Color.white.opacity(0.1),
+                                Color.clear
+                            ],
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: 100
+                        )
+                    )
+                    .frame(width: 200, height: 200)
+                    .offset(
+                        x: CGFloat(index * 150 - 150),
+                        y: CGFloat(index * 200 - 200)
+                    )
+                    .blur(radius: 20)
+            }
+            
+            // Glass effect overlay
+            Rectangle()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.05),
+                            Color.clear,
+                            Color.white.opacity(0.02)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+        }
+        .ignoresSafeArea()
     }
     
     // MARK: - View Components
     
-    private var secondsLampView: some View {
-        VStack {
+    private func secondsLampView(geometry: GeometryProxy) -> some View {
+        let lampSize = min(LayoutConstants.baseLampSize, geometry.size.width * 0.12)
+        
+        return VStack {
             Text("Seconds")
                 .font(.caption)
                 .foregroundColor(.white)
+                .multilineTextAlignment(.center)
             
             Circle()
                 .fill(viewModel.secondsLamp ? Color.yellow : Color.gray.opacity(0.3))
                 .frame(width: lampSize, height: lampSize)
                 .overlay(
                     Circle()
-                        .stroke(Color.white.opacity(0.3), lineWidth: 2)
+                        .stroke(Color.white.opacity(0.3), lineWidth: LayoutConstants.secondsLampStrokeWidth)
                 )
         }
+        .frame(maxWidth: .infinity)
     }
     
-    private func hourRowView(lights: [Bool], color: Color, label: String) -> some View {
-        VStack {
+    private func hourRowView(lights: [Bool], color: Color, label: String, geometry: GeometryProxy) -> some View {
+        let lampWidth = calculateLampWidth(for: lights.count, geometry: geometry)
+        let lampHeight = lampWidth * 0.6
+        
+        return VStack {
             Text(label)
                 .font(.caption)
                 .foregroundColor(.white)
+                .multilineTextAlignment(.center)
             
-            HStack(spacing: spacing) {
+            HStack(spacing: LayoutConstants.spacing) {
                 ForEach(0..<lights.count, id: \.self) { index in
                     Rectangle()
                         .fill(lights[index] ? color : Color.gray.opacity(0.3))
-                        .frame(width: lampSize, height: lampSize * 0.6)
-                        .cornerRadius(8)
+                        .frame(width: lampWidth, height: lampHeight)
+                        .cornerRadius(LayoutConstants.cornerRadius)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                            RoundedRectangle(cornerRadius: LayoutConstants.cornerRadius)
+                                .stroke(Color.white.opacity(0.3), lineWidth: LayoutConstants.strokeWidth)
                         )
                 }
             }
+            .frame(maxWidth: .infinity)
         }
+        .frame(maxWidth: .infinity)
     }
     
-    private func minuteRowView(lights: [Bool], color: Color, label: String) -> some View {
-        VStack {
+    private func minuteRowView(lights: [Bool], color: Color, label: String, geometry: GeometryProxy) -> some View {
+        let lampWidth = calculateLampWidth(for: lights.count, geometry: geometry, isMinuteRow: true)
+        let lampHeight = lampWidth * 0.6
+        
+        return VStack {
             Text(label)
                 .font(.caption)
                 .foregroundColor(.white)
+                .multilineTextAlignment(.center)
             
-            HStack(spacing: spacing) {
+            HStack(spacing: LayoutConstants.spacing) {
                 ForEach(0..<lights.count, id: \.self) { index in
                     Rectangle()
-                        .fill(lights[index] ? (index == 2 || index == 5 || index == 8 ? .red : color) : Color.gray.opacity(0.3))
-                        .frame(width: lampSize * 0.8, height: lampSize * 0.6)
-                        .cornerRadius(6)
+                        .fill(lampColor(for: index, isOn: lights[index], baseColor: color))
+                        .frame(width: lampWidth, height: lampHeight)
+                        .cornerRadius(LayoutConstants.smallCornerRadius)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                            RoundedRectangle(cornerRadius: LayoutConstants.smallCornerRadius)
+                                .stroke(Color.white.opacity(0.3), lineWidth: LayoutConstants.strokeWidth)
                         )
                 }
             }
+            .frame(maxWidth: .infinity)
         }
+        .frame(maxWidth: .infinity)
     }
     
-    private var controlButtonsView: some View {
-        HStack(spacing: 20) {
-            Button("Start") {
-                viewModel.startTimer()
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(viewModel.isTimerRunning)
-            
-            Button("Stop") {
-                viewModel.stopTimer()
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(!viewModel.isTimerRunning)
-        }
-        .padding()
+    // MARK: - Helper Methods
+    
+    private func calculateLampWidth(for count: Int, geometry: GeometryProxy, isMinuteRow: Bool = false) -> CGFloat {
+        let availableWidth = geometry.size.width - (2 * 16) // padding
+        let totalSpacing = CGFloat(count - 1) * LayoutConstants.spacing
+        let maxLampWidth = (availableWidth - totalSpacing) / CGFloat(count)
+        
+        // For minute rows (especially the 11-lamp row), use smaller size
+        let baseLampSize = isMinuteRow ? LayoutConstants.baseLampSize * 0.8 : LayoutConstants.baseLampSize
+        
+        return min(baseLampSize, maxLampWidth)
+    }
+    
+    private func lampColor(for index: Int, isOn: Bool, baseColor: Color) -> Color {
+        guard isOn else { return Color.gray.opacity(0.3) }
+        
+        // Quarter-hour indicators (3rd, 6th, 9th positions - 0-indexed: 2, 5, 8)
+        let quarterHourPositions = [2, 5, 8]
+        return quarterHourPositions.contains(index) ? .red : baseColor
     }
 }
  
@@ -142,9 +258,6 @@ struct PreviewTimeProvider: BerlinTimeProvider {
     let viewModel = BerlinClockViewModel(timeProvider: previewTimeProvider, converter: converter)
     
     BerlinClockView(viewModel: viewModel)
-        .onAppear {
-            viewModel.updateTime()
-        }
 }
  
      
