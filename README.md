@@ -1,28 +1,33 @@
 
 
-Berlin Clock (Mengenlehreuhr) – iOS (TDD + Clean Architecture)
+# Berlin Clock (Mengenlehreuhr) – iOS  
+### TDD • Clean Architecture • SwiftUI
+
 
 A production-grade implementation of the Berlin Clock kata built using Test-Driven Development (TDD) and Clean Architecture in Swift / SwiftUI.
 
 This project demonstrates senior-level iOS engineering practices including SOLID principles, MVVM, dependency injection, and comprehensive unit testing.
 
-📌 Overview
+<p align="center">
+  <img src="assets/BerlinClock.png" width="400"/>
+</p>
+
+---
+
+## 📌 Overview
 
 The Berlin Clock (German: Mengenlehreuhr) is a clock that represents time using illuminated colored lamps instead of digits.
 
 This application:
 
-Converts real system time into Berlin Clock format
+- Converts real system time into Berlin Clock format
+- Updates every second
+- Follows strict TDD (Red → Green → Refactor)
+- Maintains high test coverage
+- Applies Clean Architecture and SOLID principles
 
-Updates every second
 
-Follows strict TDD (Red → Green → Refactor)
-
-Maintains high test coverage
-
-Applies Clean Architecture and SOLID principles
-
-⏰ Berlin Clock Rules
+## ⏰ Berlin Clock Rules
 
 The clock contains 5 rows:
 
@@ -35,19 +40,16 @@ The clock contains 5 rows:
 | 5   | Single Minutes | 4     | Yellow                       |
 
 
-Example: 14:32:17
+### Example: 14:32:17
 
-Seconds → OFF
+- Seconds → OFF  
+- Five Hours → RR-- (10 hours)  
+- Single Hours → RRRR (4 hours)  
+- Five Minutes → YYRYYR----- (30 minutes)  
+- Single Minutes → YY-- (2 minutes)
 
-Five Hours → RR-- (10 hours)
 
-Single Hours → RRRR (4 hours)
-
-Five Minutes → YYRYYR----- (30 minutes)
-
-Single Minutes → YY-- (2 minutes)
-
-🏗 Architecture
+## 🏗 Architecture
 
 This project follows Clean Architecture with strict separation of concerns:
 
@@ -59,7 +61,7 @@ Domain Layer (Business Logic, Models, Protocols)
         ↓
 Infrastructure Layer (System integrations)
 
-🧪 Testing Strategy
+## 🧪 Testing Strategy
 
 This project was built strictly using TDD.
 
@@ -73,19 +75,20 @@ Refactor safely
 
 Commit each step
 
-Test Coverage
--------------
-Domain logic
+### Test Coverage
 
-Edge cases
+The project maintains high unit test coverage across all layers:
 
-ViewModel behavior
+- **Domain Logic** – Validation of `Time` value object and Berlin clock state
+- **Conversion Rules** – Boundary cases (00:00:00, 23:59:59) and edge conditions
+- **ViewModel Behavior** – State updates, timer lifecycle, and dependency injection
+- **Integration Flows** – End-to-end time → conversion → presentation pipeline
+- **Mock-based Time Control** – Deterministic testing via `TimeProvider` abstraction
 
-Integration flows
+Coverage: ~90%+
 
-Mock-based time control
 
-📁 Project Structure
+## 📁 Project Structure
 
 BerlinClock/
 ├── Domain/
@@ -101,15 +104,14 @@ BerlinClockTests/
 ├── Integration/
 └── Mocks/
 
-🚀 Getting Started
-Requirements
+## 🚀 Requirements
 
-Xcode 15+
+- Xcode 16+
+- iOS 17+
 
-iOS 17+
+### Run App
+`Cmd + R`
 
-Swift 5.9+
+### Run Tests
+`Cmd + U`
 
-Run App :Cmd + R
-
-Run Tests :Cmd + U
